@@ -1,0 +1,860 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+@import "aos/dist/aos.css";
+
+/* Design System CSS Variables */
+:root {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-bg-canvas: #F8FAFC;
+  --color-card-surface: #FFFFFF;
+  --color-surface-secondary: #EFF6FF;
+  --color-accent-cyan: #0891B2;
+  --color-accent-violet: #7C3AED;
+  --color-tint-violet: #F5F3FF;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #64748B;
+  --color-border-subtle: #E2E8F0;
+}
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans);
+    background-color: #F8FAFC;
+    color: #0F172A;
+    overflow-x: hidden;
+  }
+
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F1F5F9;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+}
+
+/* ================= GLASSMORPHISM SYSTEM ================= */
+.glass-nav {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+}
+
+.glass-control {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.glass-modal {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18);
+}
+
+/* Fallback for browsers that do not support backdrop-filter */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-nav,
+  .glass-panel,
+  .glass-control,
+  .glass-modal {
+    background: #FFFFFF !important;
+  }
+}
+
+/* ================= NEUMORPHISM FOR SELECTED CONTROLS ================= */
+/* Subtle raised soft shadow for small icon buttons & secondary tools */
+.neu-raised {
+  background: #FFFFFF;
+  box-shadow: 3px 3px 6px #E2E8F0, -3px -3px 6px #FFFFFF;
+  border: 1px solid #F1F5F9;
+}
+.neu-raised:hover {
+  box-shadow: 4px 4px 8px #CBD5E1, -4px -4px 8px #FFFFFF;
+}
+
+/* Subtle inset soft shadow for active/pressed toggles */
+.neu-inset {
+  background: #F8FAFC;
+  box-shadow: inset 2px 2px 4px #CBD5E1, inset -2px -2px 4px #FFFFFF;
+  border: 1px solid #E2E8F0;
+}
+
+/* Selected pill / toggle control */
+.neu-selected-cyan {
+  background: #EFF6FF;
+  box-shadow: inset 1.5px 1.5px 3px rgba(8, 145, 178, 0.25), inset -1.5px -1.5px 3px #FFFFFF;
+  border: 1px solid #BFDBFE;
+  color: #0891B2;
+}
+
+.neu-selected-violet {
+  background: #F5F3FF;
+  box-shadow: inset 1.5px 1.5px 3px rgba(124, 58, 237, 0.25), inset -1.5px -1.5px 3px #FFFFFF;
+  border: 1px solid #DDD6FE;
+  color: #7C3AED;
+}
+
+/* ================= SWISS DESIGN TYPOGRAPHY & DATA TABLES ================= */
+.font-serif-heading {
+  font-family: var(--font-serif);
+}
+
+.font-sans-main {
+  font-family: var(--font-sans);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+/* ================= AOS ACCESSIBILITY & FALLBACKS ================= */
+@media (prefers-reduced-motion: reduce) {
+  [data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Prevent content from remaining invisible if JS fails to execute */
+.no-js [data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ================= LEAFLET OVERRIDES ================= */
+.leaflet-container {
+  font-family: var(--font-sans);
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+.leaflet-popup-content-wrapper {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1) !important;
+  border: 1px solid #E2E8F0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+.leaflet-popup-tip {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+}
+.leaflet-control-zoom {
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+.leaflet-control-zoom a {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+.leaflet-control-zoom a:hover {
+  background-color: #F8FAFC !important;
+  color: #0891B2 !important;
+}
+
+/* ================= LANDING PAGE — TRAVEL AROUND THE WORLD ================= */
+/* Caveat cursive font for the Hero tagline "Explore. Dream. Discover." */
+.font-script {
+  font-family: 'Caveat', cursive, sans-serif;
+}
+
+/* ================= GOLDEN HOUR THEME (SCOPED TO NON-HOME PAGES ONLY) ================= */
+.app-theme {
+  --bg: #F6EFE6;            /* page background */
+  --surface: #FFFFFF;       /* cards */
+  --surface-soft: #FBF6EE;  /* soft panels, inputs */
+  --ink: #14213D;           /* headings, primary button bg */
+  --text: #14213D;
+  --muted: #6B6F80;
+  --gold: #D4A24C;          /* ratings, badges, accents */
+  --terracotta: #E76F51;    /* main CTA, highlights */
+  --teal: #2A9D8F;          /* chips, success, map pins */
+  --border: rgba(20, 33, 61, 0.12);
+  --shadow-sm: 0 2px 8px rgba(20, 33, 61, 0.06);
+  --shadow-md: 0 10px 30px rgba(20, 33, 61, 0.10);
+  --radius: 16px;
+
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+  scroll-behavior: smooth;
+}
+
+/* Headings within Golden Hour */
+.app-theme h1,
+.app-theme h2,
+.app-theme h3,
+.app-theme h4,
+.app-theme h5,
+.app-theme h6 {
+  color: var(--ink);
+}
+
+/* Cards */
+.app-theme .gh-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-theme .gh-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.app-theme .gh-card-static {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Card image container with zoom on hover */
+.app-theme .gh-img-container {
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: #EBDCC6;
+}
+
+.app-theme .gh-card:hover .gh-img-container img,
+.app-theme .gh-img-container:hover img {
+  transform: scale(1.05);
+}
+
+.app-theme .gh-img-container img {
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Soft Panels */
+.app-theme .gh-panel {
+  background-color: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* Inputs */
+.app-theme .gh-input {
+  background-color: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 12px;
+  transition: border-color 200ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-theme .gh-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(212, 162, 76, 0.2);
+}
+
+/* Primary Button (Terracotta main CTA) */
+.app-theme .gh-btn-primary {
+  background-color: var(--terracotta);
+  color: #FFFFFF;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(231, 111, 81, 0.25);
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), filter 200ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-theme .gh-btn-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow: 0 4px 12px rgba(231, 111, 81, 0.35);
+}
+
+.app-theme .gh-btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Dark Button (Ink) */
+.app-theme .gh-btn-ink {
+  background-color: var(--ink);
+  color: #FFFFFF;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), filter 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-theme .gh-btn-ink:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.app-theme .gh-btn-ink:active {
+  transform: scale(0.98);
+}
+
+/* Secondary Button (Surface with border) */
+.app-theme .gh-btn-secondary {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 500;
+  border-radius: 12px;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms;
+}
+
+.app-theme .gh-btn-secondary:hover {
+  transform: translateY(-1px);
+  background-color: var(--surface-soft);
+}
+
+.app-theme .gh-btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* Badges and Chips */
+.app-theme .gh-badge-gold {
+  background-color: rgba(212, 162, 76, 0.15);
+  color: #B27B22;
+  border: 1px solid rgba(212, 162, 76, 0.3);
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+.app-theme .gh-badge-teal {
+  background-color: rgba(42, 157, 143, 0.12);
+  color: #1E7469;
+  border: 1px solid rgba(42, 157, 143, 0.28);
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+.app-theme .gh-badge-ink {
+  background-color: rgba(20, 33, 61, 0.08);
+  color: var(--ink);
+  border: 1px solid rgba(20, 33, 61, 0.15);
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+/* Skeleton Shimmer */
+@keyframes gh-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.app-theme .gh-skeleton {
+  background: linear-gradient(90deg, #EBDCC6 25%, #F6EFE6 50%, #EBDCC6 75%);
+  background-size: 200% 100%;
+  animation: gh-shimmer 1.6s infinite ease-in-out;
+  border-radius: 8px;
+}
+
+/* Typing indicator dots */
+@keyframes gh-bounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+}
+
+.app-theme .gh-dot-1 {
+  animation: gh-bounce 1.2s infinite ease-in-out 0s;
+}
+.app-theme .gh-dot-2 {
+  animation: gh-bounce 1.2s infinite ease-in-out 0.2s;
+}
+.app-theme .gh-dot-3 {
+  animation: gh-bounce 1.2s infinite ease-in-out 0.4s;
+}
+
+/* Page entrance animation (fade + 12px upward slide) */
+@keyframes ghPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gh-page-enter {
+  animation: ghPageEnter 350ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Scoped harmony overrides for legacy utilities inside non-home pages */
+.app-theme .glass-panel,
+.app-theme .glass-control {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.app-theme .neu-raised {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-sm) !important;
+  color: var(--text) !important;
+}
+
+.app-theme .neu-raised:hover {
+  background-color: var(--surface-soft) !important;
+  border-color: var(--gold) !important;
+}
+
+.app-theme .neu-selected-cyan {
+  background-color: var(--ink) !important;
+  color: #FFFFFF !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* Accessibility: Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .app-theme *,
+  .app-theme *::before,
+  .app-theme *::after,
+  .gh-page-enter {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+}
+
+/* ================= GOLDEN HOUR HOME PAGE DESIGN SYSTEM ================= */
+.home-golden-hour,
+[data-scene="flight"] {
+  --cream: #F6EFE6;
+  --card: #FFFFFF;
+  --soft: #FBF6EE;
+  --ink: #14213D;
+  --muted: #6B6F80;
+  --gold: #D4A24C;
+  --terracotta: #E76F51;
+  --teal: #2A9D8F;
+  --border: rgba(20, 33, 61, 0.12);
+  --shadow-sm: 0 2px 8px rgba(20, 33, 61, 0.06);
+  --shadow-md: 0 10px 30px rgba(20, 33, 61, 0.10);
+  --shadow-lg: 0 24px 60px rgba(20, 33, 61, 0.16);
+
+  /* Flight Scene Default Variables (Unchanged Flight Visuals) */
+  --hero-title: #14213D;
+  --hero-accent-from: #D4A24C;
+  --hero-accent-to: #E76F51;
+  --hero-sub: #6B6F80;
+  --hero-text-shadow: none;
+  --nav-link: #6B6F80;
+  --nav-link-active: #14213D;
+  --nav-active: #D4A24C;
+  --glass-bg: rgba(255, 255, 255, 0.70);
+  --glass-bg-hover: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(20, 33, 61, 0.12);
+  --glass-border-hover: #D4A24C;
+  --glass-text: #14213D;
+  --glass-text-muted: #6B6F80;
+  --chip-teal: #2A9D8F;
+  --glow: transparent;
+  --scrim-opacity: 0;
+
+  --brand-title: #14213D;
+  --brand-sub: #6B6F80;
+  --brand-badge-bg: rgba(212, 162, 76, 0.15);
+  --brand-badge-border: rgba(212, 162, 76, 0.30);
+  --brand-badge-text: #B27B22;
+
+  --nav-scrolled-bg: rgba(246, 239, 230, 0.90);
+  --nav-scrolled-border: rgba(20, 33, 61, 0.12);
+  --nav-scrolled-backdrop: blur(12px);
+  --nav-scrolled-shadow: 0 4px 20px rgba(20, 33, 61, 0.06);
+  --nav-mobile-bg: rgba(246, 239, 230, 0.98);
+
+  --nav-toggle-bg: rgba(255, 255, 255, 0.80);
+  --nav-toggle-border: rgba(20, 33, 61, 0.12);
+  --nav-toggle-btn-inactive: #6B6F80;
+  --nav-toggle-btn-active-bg: #14213D;
+  --nav-toggle-btn-active-text: #FFFFFF;
+
+  --small-text: #6B6F80;
+  --small-text-hover: #14213D;
+  --scroll-pill-border: rgba(20, 33, 61, 0.25);
+  --photo-card-shadow: 0 12px 36px rgba(20, 33, 61, 0.12);
+
+  color: #14213D;
+}
+
+/* Orbit Scene Overrides */
+[data-scene="orbit"] {
+  --hero-title: #F6EFE6;
+  --hero-accent-from: #F2B35E;
+  --hero-accent-to: #E76F51;
+  --hero-sub: #D5D9E6;
+  --hero-text-shadow: 0 2px 24px rgba(7, 12, 28, 0.6);
+  --nav-link: #EDE7DC;
+  --nav-link-active: #FFFFFF;
+  --nav-active: #D4A24C;
+  --glass-bg: rgba(255, 255, 255, 0.10);
+  --glass-bg-hover: rgba(255, 255, 255, 0.18);
+  --glass-border: rgba(255, 255, 255, 0.22);
+  --glass-border-hover: rgba(255, 255, 255, 0.45);
+  --glass-text: #F6EFE6;
+  --glass-text-muted: #D5D9E6;
+  --chip-teal: #4FD1BE;
+  --glow: rgba(242, 179, 94, 0.25);
+  --scrim-opacity: 1;
+
+  --brand-title: #F6EFE6;
+  --brand-sub: #D5D9E6;
+  --brand-badge-bg: rgba(242, 179, 94, 0.20);
+  --brand-badge-border: rgba(242, 179, 94, 0.40);
+  --brand-badge-text: #F2B35E;
+
+  --nav-scrolled-bg: rgba(10, 16, 32, 0.55);
+  --nav-scrolled-border: rgba(255, 255, 255, 0.12);
+  --nav-scrolled-backdrop: blur(14px);
+  --nav-scrolled-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --nav-mobile-bg: rgba(10, 16, 32, 0.96);
+
+  --nav-toggle-bg: rgba(255, 255, 255, 0.10);
+  --nav-toggle-border: rgba(255, 255, 255, 0.22);
+  --nav-toggle-btn-inactive: #EDE7DC;
+  --nav-toggle-btn-active-bg: rgba(255, 255, 255, 0.22);
+  --nav-toggle-btn-active-text: #F6EFE6;
+
+  --small-text: #D5D9E6;
+  --small-text-hover: #FFFFFF;
+  --scroll-pill-border: rgba(255, 255, 255, 0.35);
+  --photo-card-shadow: 0 12px 36px rgba(20, 33, 61, 0.12), 0 0 32px var(--glow);
+
+  color: #EDE7DC;
+}
+
+/* Nav Link Button Styling with Smooth Scene Transitions */
+.nav-link-btn {
+  color: var(--nav-link);
+  transition: color 200ms ease, opacity 200ms ease;
+}
+.nav-link-btn:hover {
+  color: var(--nav-link-active);
+}
+.nav-link-btn.is-active {
+  color: var(--nav-link-active);
+  font-weight: 700;
+}
+
+/* Smooth Cross-Fade Transition for Scene Colors (600ms cubic-bezier(0.22, 1, 0.36, 1)) */
+.scene-transition {
+  transition: color 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              text-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Left-side Scrim for Orbit Hero (pointer-events: none, does not hide Earth) */
+.scene-scrim {
+  background: linear-gradient(90deg, rgba(7, 12, 28, 0.70) 0%, rgba(7, 12, 28, 0.35) 50%, transparent 78%);
+  opacity: var(--scrim-opacity);
+  pointer-events: none;
+}
+
+/* Golden Hour Glass Panel for Home Page (Light, Semi-transparent, 20px radius) */
+.gh-home-glass {
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  border: 1px solid rgba(20, 33, 61, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(20, 33, 61, 0.08);
+}
+
+.gh-home-glass-cream {
+  background: rgba(246, 239, 230, 0.72);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  border: 1px solid rgba(20, 33, 61, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(20, 33, 61, 0.08);
+}
+
+.gh-home-glass-card {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  border: 1px solid rgba(20, 33, 61, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(20, 33, 61, 0.08);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gh-home-glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px rgba(20, 33, 61, 0.16);
+}
+
+/* Terracotta CTA Button with shimmer sweep every 5 seconds */
+.gh-btn-terracotta {
+  background-color: #E76F51;
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 4px 14px rgba(231, 111, 81, 0.35);
+}
+
+.gh-btn-terracotta:hover {
+  transform: translateY(-1px);
+  background-color: #df6344;
+  box-shadow: 0 8px 24px rgba(231, 111, 81, 0.45);
+}
+
+.gh-btn-terracotta:active {
+  transform: scale(0.98);
+}
+
+/* Terracotta Shimmer Sweep Pseudo-element */
+.gh-btn-terracotta::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  animation: ghCtaShimmer 5s infinite cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+@keyframes ghCtaShimmer {
+  0%, 75% {
+    transform: translateX(-150%) skewX(-20deg);
+    opacity: 0;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(450%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+/* Gold Underline Left-to-Right Draw Animation */
+@keyframes ghUnderlineDraw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.gh-underline-animated {
+  transform-origin: left center;
+  animation: ghUnderlineDraw 650ms cubic-bezier(0.22, 1, 0.36, 1) 400ms forwards;
+}
+
+/* Gold to Terracotta Text Shimmer */
+@keyframes ghTextShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gh-text-shimmer {
+  background: linear-gradient(90deg, var(--hero-accent-from, #D4A24C) 0%, var(--hero-accent-to, #E76F51) 50%, var(--hero-accent-from, #D4A24C) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ghTextShimmer 4s ease-in-out infinite;
+}
+
+/* Ambient Glow Orbs Drifting */
+@keyframes ghDriftOrb1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(24px, -18px) scale(1.06);
+  }
+}
+
+@keyframes ghDriftOrb2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+}
+
+.gh-orb-1 {
+  animation: ghDriftOrb1 9s ease-in-out infinite;
+}
+
+.gh-orb-2 {
+  animation: ghDriftOrb2 11s ease-in-out infinite;
+}
+
+/* Gentle Bobbing for Scroll Indicator */
+@keyframes ghBob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+.gh-bob {
+  animation: ghBob 2s ease-in-out infinite;
+}
+
+/* Photo Collage Floating Animations (4-6px up/down offset timing) */
+@keyframes ghFloat1 {
+  0%, 100% {
+    transform: translateY(0px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-3deg);
+  }
+}
+
+@keyframes ghFloat2 {
+  0%, 100% {
+    transform: translateY(0px) rotate(2.5deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(2.5deg);
+  }
+}
+
+@keyframes ghFloat3 {
+  0%, 100% {
+    transform: translateY(0px) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-1.5deg);
+  }
+}
+
+.gh-float-1 {
+  animation: ghFloat1 6s ease-in-out infinite;
+}
+
+.gh-float-2 {
+  animation: ghFloat2 7.5s ease-in-out infinite 0.8s;
+}
+
+.gh-float-3 {
+  animation: ghFloat3 6.8s ease-in-out infinite 1.5s;
+}
+
+/* Marquee Testimonials Drift */
+@keyframes ghMarquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.gh-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: ghMarquee 38s linear infinite;
+}
+
+.gh-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Focus Ring for Search Inputs */
+.gh-focus-ring:focus-within,
+.gh-focus-ring:focus {
+  border-color: #D4A24C !important;
+  box-shadow: 0 0 0 4px rgba(212, 162, 76, 0.22) !important;
+}
+
+/* Image loading placeholder */
+.gh-img-frame {
+  background-color: #EBDCC6;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Reduced Motion Override for Home Page */
+@media (prefers-reduced-motion: reduce) {
+  .home-golden-hour *,
+  .home-golden-hour *::before,
+  .home-golden-hour *::after,
+  .gh-btn-terracotta::after,
+  .gh-underline-animated,
+  .gh-text-shimmer,
+  .gh-orb-1,
+  .gh-orb-2,
+  .gh-bob,
+  .gh-float-1,
+  .gh-float-2,
+  .gh-float-3,
+  .gh-marquee-track {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+}
+
